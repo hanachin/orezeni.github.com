@@ -22,6 +22,10 @@ yepnope({
       return 'icons/unknown.svg';
     }
 
+    function selectedLocalGovName() {
+      return jQuery('#local-gov :selected').parent().attr('label');
+    }
+
     function selectedDataset() {
       return jQuery('#local-gov').val().split(',')[0];
     }
@@ -58,9 +62,11 @@ yepnope({
       }
 
       $('#local-gov').change(function () {
+        $('.local-gov-name').text(selectedLocalGovName());
         loadData(selectedDataset(), selectedYear());
       });
 
+      $('.local-gov-name').text(selectedLocalGovName());
       loadData(selectedDataset(), selectedYear());
     }
 
