@@ -12,7 +12,7 @@ yepnope({
     '/js/dailybread.js?20120707'
   ],
   complete: function() {
-    var loadData = function(callback) {
+    function loadData(callback) {
       new OpenSpending.Aggregator({
         apiUrl: 'http://openspending.org/api',
         //localApiCache: 'aggregate.json',
@@ -23,7 +23,7 @@ yepnope({
         breakdown: 'Subcategory',
         callback: callback
       });
-    };
+    }
 
     function iconLookup(name) {
       var style = OpenSpending.Styles.Cofog[name];
