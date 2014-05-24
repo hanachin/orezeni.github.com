@@ -1,4 +1,3 @@
-
 yepnope({
   load: [
     // 'http://wheredoesmymoneygo.org/wp-content/themes/wdmmg/wdmmg.css',
@@ -13,39 +12,32 @@ yepnope({
     '/js/dailybread.js?20120707'
   ],
   complete: function() {
-
     (function ($) {
-
       $(function () {
-
         $('#preloader .txt').html('loading data');
-
-       var db = new OpenSpending.DailyBread($('#dailybread'));
-       new OpenSpending.Aggregator({
-           apiUrl: 'http://openspending.org/api',
-           //localApiCache: 'aggregate.json',
-           dataset: OpenSpending.identifier,
-           drilldowns: ['Category', 'Subcategory'],
-           cuts: ['year:' + OpenSpending.year],
-           rootNodeLabel: 'Total',
-           breakdown: 'Subcategory',
-           callback: function(data) {
-
+        var db = new OpenSpending.DailyBread($('#dailybread'));
+        new OpenSpending.Aggregator({
+          apiUrl: 'http://openspending.org/api',
+          //localApiCache: 'aggregate.json',
+          dataset: OpenSpending.identifier,
+          drilldowns: ['Category', 'Subcategory'],
+          cuts: ['year:' + OpenSpending.year],
+          rootNodeLabel: 'Total',
+          breakdown: 'Subcategory',
+          callback: function(data) {
             $('#content-wrap').show();
             $('#preloader').remove();
-
             db.setDataFromAggregator(data, ['unknown']);
             db.setIconLookup(function(name) {
               var style = OpenSpending.Styles.Cofog[name];
               if (style != undefined) {
-               return style['icon'];
+                return style['icon'];
               }
               return 'icons/unknown.svg';
             });
             db.draw();
-           }
+          }
         });
-
         OpenSpending.renderDependentTypes(db);
       });
     })(jQuery)
