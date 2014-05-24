@@ -24,17 +24,20 @@ yepnope({
         callback: callback
       });
     };
+
+    function iconLookup(name) {
+      var style = OpenSpending.Styles.Cofog[name];
+      if (style != undefined) {
+        return style['icon'];
+      }
+      return 'icons/unknown.svg';
+    }
+
     (function ($) {
       $(function () {
         $('#preloader .txt').html('loading data');
         var dailyBread = new OpenSpending.DailyBread($('#dailybread'));
-        dailyBread.setIconLookup(function(name) {
-          var style = OpenSpending.Styles.Cofog[name];
-          if (style != undefined) {
-            return style['icon'];
-          }
-          return 'icons/unknown.svg';
-        });
+        dailyBread.setIconLookup(iconLookup);
         var dataLoaded = function(data) {
           $('#content-wrap').show();
           $('#preloader').remove();
