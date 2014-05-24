@@ -12,18 +12,7 @@ yepnope({
     '/js/dailybread.js?20120707'
   ],
   complete: function() {
-    function loadData(callback) {
-      new OpenSpending.Aggregator({
-        apiUrl: 'http://openspending.org/api',
-        //localApiCache: 'aggregate.json',
-        dataset: OpenSpending.identifier,
-        drilldowns: ['Category', 'Subcategory'],
-        cuts: ['year:' + OpenSpending.year],
-        rootNodeLabel: 'Total',
-        breakdown: 'Subcategory',
-        callback: callback
-      });
-    }
+    $('#preloader .txt').html('loading data');
 
     function iconLookup(name) {
       var style = OpenSpending.Styles.Cofog[name];
@@ -33,20 +22,48 @@ yepnope({
       return 'icons/unknown.svg';
     }
 
-    (function ($) {
-      $(function () {
-        $('#preloader .txt').html('loading data');
-        var dailyBread = new OpenSpending.DailyBread($('#dailybread'));
-        dailyBread.setIconLookup(iconLookup);
-        var dataLoaded = function(data) {
-          $('#content-wrap').show();
-          $('#preloader').remove();
-          dailyBread.setDataFromAggregator(data, ['unknown']);
-          dailyBread.draw();
-        };
-        loadData(dataLoaded);
-        OpenSpending.renderDependentTypes(dailyBread);
+    function selectedDataset() {
+      return jQuery('#local-gov').val().split(',')[0];
+    }
+
+    function selectedYear() {
+      return jQuery('#local-gov').val().split(',')[1];
+    }
+
+    function setup() {
+      var $ = jQuery;
+
+      var dailyBread = new OpenSpending.DailyBread($('#dailybread'));
+      dailyBread.setIconLookup(iconLookup);
+      OpenSpending.renderDependentTypes(dailyBread);
+
+      var loadData = function (dataset, year) {
+        $('#content-wrap,.db-tier').hide();
+        $('#preloader').show();
+
+        new OpenSpending.Aggregator({
+          apiUrl: 'http://openspending.org/api',
+          dataset: dataset,
+          drilldowns: ['Category', 'Subcategory'],
+          cuts: ['year:' + year],
+          rootNodeLabel: 'Total',
+          breakdown: 'Subcategory',
+          callback: function(data) {
+            $('#content-wrap,.db-tier').show();
+            $('#preloader').hide();
+            dailyBread.setDataFromAggregator(data, ['unknown']);
+            dailyBread.draw();
+          }
+        });
+      }
+
+      $('#local-gov').change(function () {
+        loadData(selectedDataset(), selectedYear());
       });
-    })(jQuery)
+
+      loadData(selectedDataset(), selectedYear());
+    }
+
+    jQuery(setup);
   }
 });
