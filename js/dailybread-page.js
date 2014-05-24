@@ -15,7 +15,7 @@ yepnope({
     (function ($) {
       $(function () {
         $('#preloader .txt').html('loading data');
-        var db = new OpenSpending.DailyBread($('#dailybread'));
+        var dailyBread = new OpenSpending.DailyBread($('#dailybread'));
         new OpenSpending.Aggregator({
           apiUrl: 'http://openspending.org/api',
           //localApiCache: 'aggregate.json',
@@ -27,18 +27,18 @@ yepnope({
           callback: function(data) {
             $('#content-wrap').show();
             $('#preloader').remove();
-            db.setDataFromAggregator(data, ['unknown']);
-            db.setIconLookup(function(name) {
+            dailyBread.setDataFromAggregator(data, ['unknown']);
+            dailyBread.setIconLookup(function(name) {
               var style = OpenSpending.Styles.Cofog[name];
               if (style != undefined) {
                 return style['icon'];
               }
               return 'icons/unknown.svg';
             });
-            db.draw();
+            dailyBread.draw();
           }
         });
-        OpenSpending.renderDependentTypes(db);
+        OpenSpending.renderDependentTypes(dailyBread);
       });
     })(jQuery)
   }
