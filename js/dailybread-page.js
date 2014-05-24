@@ -12,6 +12,18 @@ yepnope({
     '/js/dailybread.js?20120707'
   ],
   complete: function() {
+    var loadData = function(callback) {
+      new OpenSpending.Aggregator({
+        apiUrl: 'http://openspending.org/api',
+        //localApiCache: 'aggregate.json',
+        dataset: OpenSpending.identifier,
+        drilldowns: ['Category', 'Subcategory'],
+        cuts: ['year:' + OpenSpending.year],
+        rootNodeLabel: 'Total',
+        breakdown: 'Subcategory',
+        callback: callback
+      });
+    };
     (function ($) {
       $(function () {
         $('#preloader .txt').html('loading data');
@@ -29,16 +41,7 @@ yepnope({
           });
           dailyBread.draw();
         };
-        new OpenSpending.Aggregator({
-          apiUrl: 'http://openspending.org/api',
-          //localApiCache: 'aggregate.json',
-          dataset: OpenSpending.identifier,
-          drilldowns: ['Category', 'Subcategory'],
-          cuts: ['year:' + OpenSpending.year],
-          rootNodeLabel: 'Total',
-          breakdown: 'Subcategory',
-          callback: dataLoaded
-        });
+        loadData(dataLoaded);
         OpenSpending.renderDependentTypes(dailyBread);
       });
     })(jQuery)
