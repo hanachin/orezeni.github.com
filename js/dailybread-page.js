@@ -28,17 +28,17 @@ yepnope({
       $(function () {
         $('#preloader .txt').html('loading data');
         var dailyBread = new OpenSpending.DailyBread($('#dailybread'));
+        dailyBread.setIconLookup(function(name) {
+          var style = OpenSpending.Styles.Cofog[name];
+          if (style != undefined) {
+            return style['icon'];
+          }
+          return 'icons/unknown.svg';
+        });
         var dataLoaded = function(data) {
           $('#content-wrap').show();
           $('#preloader').remove();
           dailyBread.setDataFromAggregator(data, ['unknown']);
-          dailyBread.setIconLookup(function(name) {
-            var style = OpenSpending.Styles.Cofog[name];
-            if (style != undefined) {
-              return style['icon'];
-            }
-            return 'icons/unknown.svg';
-          });
           dailyBread.draw();
         };
         loadData(dataLoaded);
